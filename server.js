@@ -9,42 +9,57 @@ import bookingRoutes from "./routes/bookingRoutes.js";
 
 dotenv.config();
 
-// Connect DB
+// Connect Database
 connectDB();
 
 const app = express();
 
 /* =========================
-   CORS FIX (MOST IMPORTANT)
+   CORS CONFIGURATION
 ========================= */
-app.use(cors({
-  origin: "http://localhost:3000",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://expert-booking-frontend-ebon.vercel.app",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
 
-// Parse JSON
+/* =========================
+   MIDDLEWARE
+========================= */
 app.use(express.json());
 
-// Debug middleware
+/* =========================
+   DEBUG LOGS
+========================= */
 app.use((req, res, next) => {
-  console.log(" REQUEST:", req.method, req.url);
+  console.log("REQUEST:", req.method, req.url);
   next();
 });
 
-// Routes
-app.use("/api/experts", expertRoutes);
+/* =========================
+   ROUTES
+========================= */
 app.use("/api/auth", authRoutes);
+app.use("/api/experts", expertRoutes);
 app.use("/api/bookings", bookingRoutes);
 
-// Test route
+/* =========================
+   TEST ROUTE
+========================= */
 app.get("/", (req, res) => {
   res.send("API Running...");
 });
 
-// Start server
+/* =========================
+   SERVER
+========================= */
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log("Server running on port", PORT);
+  console.log(`Server running on port ${PORT}`);
 });
